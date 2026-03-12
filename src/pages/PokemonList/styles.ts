@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import type { Theme } from '../../global/themes';
 
 export const createStyles = (theme: Theme) =>
@@ -10,9 +10,6 @@ export const createStyles = (theme: Theme) =>
     headerTitle: {
       fontSize: 28,
       fontWeight: 'bold',
-      paddingHorizontal: 24,
-      paddingTop: 60,
-      paddingBottom: 16,
       color: theme.colors.text,
     },
     listContent: {
@@ -64,6 +61,28 @@ export const createStyles = (theme: Theme) =>
     cardImage: {
       width: 72,
       height: 72,
+    },
+    boxTop: {
+      flexDirection: "row",
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      height: Dimensions.get('window').height / 6,
+      width: '100%',
+      paddingHorizontal: 24,
+      paddingTop: 60,
+      paddingBottom: 16,
+    },
+    buttonSair: {
+      width: 100,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.accent,
+      borderRadius: 30,
+    },
+    buttonSairText: {
+      color: theme.colors.text,
+      fontWeight: 'bold',
     },
   });
 
