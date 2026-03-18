@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { createStyles } from './styles';
 import { useTheme } from '../../global/themes';
 import { useNavigation } from '@react-navigation/native';
@@ -39,6 +39,31 @@ export default function PokemonListScreen() {
   const styles = createStyles(theme);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'PokemonList'>> ();
 
+  const [pokemons, setPokemons] = useState<PokemonListItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setIsLoading(true)
+    setError(null)
+
+    const timer = setTimeout(() => {
+      try{
+        setPokemons(MOCK_POKEMON_LIST)
+      }
+      catch (e) {
+        setError('Deu ruim')
+      }
+      finally {
+        setIsLoading(false)
+      }
+    }, 1000)
+  
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [])
+
   const handleLogout = () => {
     console.log('Logout');
     navigation.reset({
@@ -66,6 +91,22 @@ export default function PokemonListScreen() {
       <Image source={{ uri: item.imageUrl }} style={styles.cardImage} />
     </TouchableOpacity>
   );
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={{ marginTop: 16, color: theme.colors.text }}>Carregando lista (simulado)...</Text>
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: theme.colors.text, marginBottom: 16 }}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

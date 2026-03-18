@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { ActivityIndicator, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { createStyles } from './styles';
 import { useTheme } from '../../global/themes';
 import { useRoute } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../routes';
-
 
 const MOCK_POKEMON_DETAIL = {
   id: 25,
@@ -24,12 +23,72 @@ const MOCK_POKEMON_DETAIL = {
     'Whenever Pikachu comes across something new, it blasts it with a jolt of electricity. If you come across a blackened berry, it is evidence that this Pokémon mistook the intensity of its charge.',
 };
 
+type PokemonDetailState = typeof MOCK_POKEMON_DETAIL;
+
 export default function PokemonDetailScreen() {
   const pokemon = MOCK_POKEMON_DETAIL;
   const theme = useTheme();
   const styles = createStyles(theme);
   const route = useRoute<RouteProp<RootStackParamList, 'PokemonDetail'>>();
   const { id } = route.params;
+
+  const [pokemons, setPokemons] = useState<PokemonDetailState | null>(null);
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setIsLoading(true)
+    setError(null)
+
+    const timer = setTimeout(() => {
+      try{
+        setPokemons({
+          ...MOCK_POKEMON_DETAIL,
+          id
+        })
+      }
+      catch (e) {
+        setError('Deu ruim')
+      }
+      finally {
+        setIsLoading(false)
+      }
+    }, 1000)
+  
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={{ marginTop: 16, color: theme.colors.text }}>Carregando detalhes (simulado)...</Text>
+      </View>
+    );
+  }
+
+  if (error || !pokemons) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: theme.colors.text, marginBottom: 16 }}>
+          {error ?? 'Erro inesperado na simulação.'}
+        </Text>
+        <TouchableOpacity
+          // onPress={() => navigation.goBack()}
+          style={{
+            paddingHorizontal: 16,
+            paddingVertical: 10,
+            borderRadius: 24,
+            backgroundColor: theme.colors.accent,
+          }}
+        >
+          <Text style={{ color: theme.colors.text, fontWeight: 'bold' }}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
