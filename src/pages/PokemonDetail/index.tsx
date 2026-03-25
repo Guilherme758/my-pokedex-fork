@@ -9,25 +9,6 @@ import { fetchPokemonDetail, type PokemonDetailResponse ,
          fetchPokemonSpecies, type PokemonSpeciesResponse
 } from '../../services/pokeapi';
 
-// const MOCK_POKEMON_DETAIL = {
-//   id: 25,
-//   name: 'pikachu',
-//   imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
-//   types: ['electric'],
-//   height: 4,
-//   weight: 60,
-//   stats: [
-//     { name: 'hp', value: 35 },
-//     { name: 'attack', value: 55 },
-//     { name: 'defense', value: 40 },
-//     { name: 'speed', value: 90 },
-//   ],
-//   description:
-//     'Whenever Pikachu comes across something new, it blasts it with a jolt of electricity. If you come across a blackened berry, it is evidence that this Pokémon mistook the intensity of its charge.',
-// };
-
-// type PokemonDetailState = typeof MOCK_POKEMON_DETAIL;
-
 export default function PokemonDetailScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
