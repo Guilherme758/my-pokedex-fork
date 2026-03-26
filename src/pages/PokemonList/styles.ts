@@ -58,8 +58,9 @@ export const createStyles = (theme: Theme) =>
     },
     typeText: {
       fontSize: 12,
+      fontWeight: '700',
       textTransform: 'capitalize',
-      color: theme.colors.text,
+      color: '#fff',
     },
     cardImage: {
       width: 72,

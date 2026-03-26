@@ -29,6 +29,60 @@ export async function fetchPokemonList(
   return response.json();
 }
 
+export type PokemonListItemUI = {
+  id: number;
+  name: string;
+  imageUrl: string;
+  types: string[];
+};
+
+type PokemonDetailListItemResponse = {
+  id: number;
+  name: string;
+  sprites: {
+    front_default: string | null;
+  };
+  types: {
+    slot: number;
+    type: {
+      name: string;
+      url: string;
+    };
+  }[];
+};
+export async function fetchPokemonListPage(
+  limit = 20,
+  offset = 0,
+  options?: FetchOptions,
+): Promise<{
+  items: PokemonListItemUI[];
+  count: number;
+  next: string | null;
+}> {
+  const data = await fetchPokemonList(limit, offset, options);
+  // N+1: para cada item da página, buscamos detalhes para pegar tipos
+  const details = await Promise.all(
+    data.results.map(async (pokemon) => {
+      const response = await fetch(pokemon.url, { signal: options?.signal });
+      if (!response.ok) {
+        throw new Error(`Falha ao buscar detalhes de ${pokemon.name}`);
+      }
+      return (await response.json()) as PokemonDetailListItemResponse;
+    }),
+  );
+  const items: PokemonListItemUI[] = details.map((detail) => ({
+    id: detail.id,
+    name: detail.name,
+    imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${detail.id}.png`,
+    types: detail.types.map((t) => t.type.name),
+  }));
+  return {
+    items,
+    count: data.count,
+    next: data.next,
+  };
+}
+
 export type PokemonDetailResponse = {
   id: number;
   name: string;
