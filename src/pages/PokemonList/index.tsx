@@ -5,9 +5,34 @@ import { useTheme } from '../../global/themes';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../routes';
-import { fetchPokemonListPage, type PokemonListItemUI } from '../../services/pokeapi';  
+import { fetchPokemonListPage, type PokemonListItemUI } from '../../services/pokeapi';
 
 const PAGE_SIZE = 10;
+
+const TYPE_COLORS: Record<string, string> = {
+  normal: '#A8A77A',
+	fire: '#EE8130',
+	water: '#6390F0',
+	electric: '#F7D02C',
+	grass: '#7AC74C',
+	ice: '#96D9D6',
+	fighting: '#C22E28',
+	poison: '#A33EA1',
+	ground: '#E2BF65',
+	flying: '#A98FF3',
+	psychic: '#F95587',
+	bug: '#A6B91A',
+	rock: '#B6A136',
+	ghost: '#735797',
+	dragon: '#6F35FC',
+	dark: '#705746',
+	steel: '#B7B7CE',
+	fairy: '#D685AD',
+};
+
+function getTypeColor(type: string) {
+  return TYPE_COLORS[type] ?? '#A8A8A8';
+}
 
 export default function PokemonListScreen() {
   const theme = useTheme();
@@ -89,13 +114,16 @@ async function loadMore() {
     >
       <View style={styles.cardLeft}>
         <Text style={styles.cardName}>{item.name}</Text>
-        {/* {<View style={styles.typeContainer}>
+        <View style={styles.typeContainer}>
           {item.types.map((type) => (
-            <View key={type} style={styles.typeBadge}>
+            <View
+              key={`${item.id}-${type}`}
+              style={[styles.typeBadge, { backgroundColor: getTypeColor(type) }]}
+            >
               <Text style={styles.typeText}>{type}</Text>
             </View>
           ))}
-        </View>} */}
+        </View>
       </View>
       <Image source={{ uri: item.imageUrl }} style={styles.cardImage} />
     </TouchableOpacity>
