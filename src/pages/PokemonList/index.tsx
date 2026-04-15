@@ -70,11 +70,13 @@ export default function PokemonListScreen() {
      setError(null);
      setIsInitialLoading(true);
      const page = await fetchPokemonListPage(PAGE_SIZE, 0);
-     const lastViewedPokemon = await getLastViewedPokemon() 
-     setItems([...lastViewedPokemon, ...page.items]);
+    //  const lastViewedPokemon = await getLastViewedPokemon() 
+    //  setItems([...lastViewedPokemon, ...page.items]);
+     setItems(page.items)
      setOffset(PAGE_SIZE);
      setHasNextPage(Boolean(page.next));
-   } catch {
+   } catch (error){
+     console.log(error)
      setError('Falha ao carregar a lista de Pokémon.');
    } finally {
      setIsInitialLoading(false);
