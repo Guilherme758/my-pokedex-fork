@@ -6,26 +6,40 @@ import { useTheme } from '../../global/themes';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../routes';
+import { validateLogin } from '../../services/authSqlite';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const theme = useTheme();
   const styles = createStyles(theme);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>> ();
 
   const handleLogin = () => {
     setIsLoading(true);
+    setErrorMessage("");
 
-    setTimeout(() => {
-      console.log('Login action', { email, password });
-      navigation.reset({
-        index: 0,
-        routes: [{name: "PokemonList"}],
-      })
-      setIsLoading(false);
-    }, 1500);
+    try {
+      if (validateLogin(email.trim().toLowerCase(), password.trim())){
+        navigation.reset({
+          index: 0,
+          routes: [{name: "PokemonList"}],
+        })
+      }
+      else {
+        setPassword("")
+        setIsLoading(false)
+        setErrorMessage("Usuário não encontrado")
+      }
+    }
+    catch (error) {
+      setPassword("")
+      setIsLoading(false)
+      setErrorMessage("Erro ao procurar o usuário")
+    }
+    
   };
 
   const isButtonDisabled = isLoading || !email || !password;
@@ -70,6 +84,7 @@ export default function LoginScreen() {
           <Text style={styles.buttonEntrarText}>Entrar</Text>
           }
         </TouchableOpacity>
+        {errorMessage ? <Text style={{color: 'red', marginTop: 8}}>{errorMessage}</Text> : null} 
       </View>
     </View>
   );
