@@ -13,6 +13,8 @@ import {
 } from '../../services/pokeapi';
 import { isFavorite, toggleFavorite } from '../../services/favoritesStorage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { notifyPokemonFavorited, scheduleQuickReminder } from '../../services/localNotifications';
+import { scheduleDailyReminder } from '../../services/localNotifications';
 
 const TYPE_COLORS: Record<string, string> = {
  normal: '#A8A77A',
@@ -93,7 +95,12 @@ export default function PokemonDetailScreen() {
      types: pokemon.types.map((t) => t.type.name),
   };
    const updated = await toggleFavorite(summary);
+   const isNowFavorite = updated.some((item) => item.id === pokemon.id)
    setFavorite(updated.some((item) => item.id === pokemon.id));
+
+   if (isNowFavorite) {
+    await notifyPokemonFavorited(pokemon.name)
+   }
  }
 
 async function handleSharePokemon() {
@@ -260,6 +267,21 @@ async function handleSharePokemon() {
     >
       <Text style={{ fontWeight: '700', color: '#fff' }}>Compartilhar</Text>
     </TouchableOpacity>
+
+    <TouchableOpacity
+      onPress={() => scheduleQuickReminder(5)}
+      style={{
+        backgroundColor: '#2563eb',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 999,
+        alignSelf: 'flex-start',
+        marginBottom: 16,
+      }}
+    >
+      <Text style={{ fontWeight: '700', color: '#fff' }}>Surpresa</Text>
+    </TouchableOpacity>
+
 
     <TouchableOpacity
       onPress={handleOpenCamera}
