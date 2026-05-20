@@ -11,4 +11,14 @@ export function initDatabase() {
             );
         `
     )
+    db.runSync(
+        `
+            CREATE TABLE IF NOT EXISTS pokemon_sightings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pokemon_id INT NOT NULL,
+                location TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+        `
+    )
 }

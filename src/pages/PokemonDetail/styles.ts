@@ -95,5 +95,16 @@ export const createStyles = (theme: Theme) =>
       fontWeight: '600',
       color: theme.colors.text,
     },
+    mapButton: {
+      marginTop: 12,
+      backgroundColor: theme.colors.primary,
+      paddingVertical: 12,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    mapButtonText: {
+      color: '#fff',
+      fontWeight: '700',
+    },
   });
 

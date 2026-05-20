@@ -282,6 +282,17 @@ async function handleSharePokemon() {
       <Text style={{ fontWeight: '700', color: '#fff' }}>Surpresa</Text>
     </TouchableOpacity>
 
+    <TouchableOpacity
+      style={styles.mapButton}
+      onPress={() => navigation.navigate('PokemonMap', {
+        id:   pokemon.id,
+        name: pokemon.name,
+      })}
+    >
+      <Text style={styles.mapButtonText}>
+        Marcar avistamento no mapa
+      </Text>
+    </TouchableOpacity>
 
     <TouchableOpacity
       onPress={handleOpenCamera}
